@@ -9,17 +9,18 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v4
 
-      - name: Check for uppercase file names
+      - name: Check for filenames with numbers
         run: |
-          if find ${{ github.workspace }} -type f | grep -q '[A-Z]'; then
-            echo "❌ Error: Some files have uppercase letters!"
-            find ${{ github.workspace }} -type f | grep '[A-Z]'
+          FILES_WITH_NUMBERS=$(find . -type f | grep -E '[0-9]')
+          if [ -n "$FILES_WITH_NUMBERS" ]; then
+            echo "❌ Error: The following files contain numbers in their names:"
+            echo "$FILES_WITH_NUMBERS"
             exit 1
           else
-            echo "✅ All file names are lowercase."
+            echo "✅ No filenames contain numbers."
           fi
 
       - name: List files in the repository
-        run: ls ${{ github.workspace }}
+        run: ls -R
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
